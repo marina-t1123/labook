@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; //Authファサードを読み込む
 
 class PostController extends Controller
 {
@@ -23,7 +24,8 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        $user = Auth::user();
+        return view('post.create', compact('user'));
     }
 
     /**
