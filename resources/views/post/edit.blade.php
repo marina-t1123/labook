@@ -11,19 +11,19 @@
             <div calss="col-md-6">
                 <div class="card">
                     <div class="card-header">
-                        <h1>投稿新規作成</h1>
+                        <h1>投稿新規編集</h1>
                     </div>
                     <div class="card-body">
-                        <form action="{{ route('post.store')}}" method="POST">
+                        <form action="{{ route('post.update', $post)}}" method="POST">
                             @csrf
-
+                            @method('PUT')
                             <div class="mb-3">
                                 <label for="title" class="form-label">タイトル</label>
-                                <input type="text" class="form-control" id="title" name="title" value="{{ old('title') }}">
+                                <input type="text" class="form-control" id="title" name="title" value="{{ $post->title }}">
                             </div>
                             <div class="mb-3">
                                 <label for="comment" class="form-label">コメント</label>
-                                <textarea class="form-control" id="comment" name="comment">{{ old('comment') }}</textarea>
+                                <textarea class="form-control" id="comment" name="comment">{{ $post->comment }}</textarea>
                             </div>
                             <div class="d-flex justify-content-center">
                                 <button type="submit" class="btn btn-primary d-flex">送信</button>

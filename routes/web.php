@@ -25,7 +25,10 @@ Route::get('/', function () {
 // });
 
 // 投稿関連
-Route::resource('/post', PostController::class);
+Route::middleware('auth')->resource('/post', PostController::class);
+
+// 返信関連
+Route::middleware('auth')->resource('comment', CommentController::class);
 
 //未使用のためコメントアウト
 // Route::get('/dashboard', function () {
