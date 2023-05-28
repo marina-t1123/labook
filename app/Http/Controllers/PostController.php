@@ -2,7 +2,12 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth; //Authファサードを読み込む
+use App\Models\User;
+use App\Models\Post;
+
 
 class PostController extends Controller
 {
@@ -13,7 +18,8 @@ class PostController extends Controller
      */
     public function index()
     {
-        return view('post.index');
+        $posts = Post::all();
+        return view('post.index', compact('posts'));
     }
 
     /**
@@ -23,7 +29,7 @@ class PostController extends Controller
      */
     public function create()
     {
-        //
+        return view('post.create');
     }
 
     /**
@@ -34,7 +40,17 @@ class PostController extends Controller
      */
     public function store(Request $request)
     {
-        //
+        //ログインユーザーのIDを取得する
+        $id = Auth::id();
+        //リクエスト送信された内容とIDを登録する
+        Post::create([
+            'user_id' => $id,
+            'title' => $request->title,
+            'comment' => $request->comment,
+        ]);
+
+        //投稿一覧画面にリダイレクト
+        return to_route('post.index')->with('status', '投稿登録完了');
     }
 
     /**
@@ -54,21 +70,26 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Post $post)
     {
-        //
+        return view('post.edit', compact('post'));
     }
 
     /**
      * Update the specified resource in storage.
      *
      * @param  \Illuminate\Http\Request  $request
-     * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Post $post)
     {
-        //
+        //リクエスト送信された入力値をDBに保存
+        $post->title = $request->title;
+        $post->comment = $request->comment;
+        $post->save();
+
+        //編集ページにリダイレクトして、メッセージを表示
+        return back()->with('status', '投稿を編集しました');
     }
 
     /**
@@ -77,8 +98,13 @@ class PostController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Post $post)
     {
-        //
+        //対象の投稿を削除する
+        $post->delete();
+
+        //一覧画面に戻る
+        return to_route('post.index')->with('status', '投稿を削除しました');
+
     }
 }
