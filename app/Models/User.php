@@ -13,6 +13,9 @@ class User extends Authenticatable
 {
     use HasApiTokens, HasFactory, Notifiable;
 
+    // 参照させたいSQLのテーブル名を指定してあげる
+    protected $table = 'users';
+
     /**
      * The attributes that are mass assignable.
      *
@@ -44,8 +47,8 @@ class User extends Authenticatable
     ];
 
     //relation
-    // public function posts()
-    // {
-    //     return $this->hasMany('App\Models\Post');
-    // }
+    public function posts()
+    {
+        return $this->hasMany(Post::class);
+    }
 }
