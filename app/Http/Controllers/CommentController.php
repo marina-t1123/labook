@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Models\User;
 use App\Models\Post;
+use App\Models\Comment;
 
 class CommentController extends Controller
 {
@@ -25,9 +26,10 @@ class CommentController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function create()
+    public function create(Post $post)
     {
-        //
+        // ddd($post);
+        return view('comment.create', compact('post'));
     }
 
     /**
@@ -36,9 +38,18 @@ class CommentController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request)
+    public function store(Request $request, Post $post)
     {
-        //
+        //リクエスト送信されたフォーム入力値と投稿IDなどを登録する
+        Comment::create([
+            'user_id' => $post->user_id,
+            'post_id' => $post->id,
+            'sentence' => $request->sentence
+        ]);
+
+        $posts = post::all();
+        //リダイレクトで投稿一覧に作成メッセージと共に表示する。
+        return to_route('post.index', compact('posts'))->with('status', 'コメント登録完了');
     }
 
     /**
@@ -58,9 +69,9 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function edit($id)
+    public function edit(Comment $comment)
     {
-        //
+        return view('comment.edit', compact('comment'));
     }
 
     /**
@@ -70,9 +81,13 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function update(Request $request, $id)
+    public function update(Request $request, Comment $comment)
     {
-        //
+        //リクエスト送信された値をDBに保存
+        $comment->sentence = $request->sentence;
+        $comment->save();
+
+        return back()->with('status', 'コメント編集完了');
     }
 
     /**
@@ -81,8 +96,10 @@ class CommentController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function destroy($id)
+    public function destroy(Comment $comment)
     {
-        //
+        $comment->delete();
+
+        return back()->with('status', 'コメントを削除');
     }
 }

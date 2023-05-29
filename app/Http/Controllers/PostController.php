@@ -83,7 +83,7 @@ class PostController extends Controller
      */
     public function update(Request $request, Post $post)
     {
-        //リクエスト送信された入力値をDBに保存
+        //リクエスト送信された値をDBに保存
         $post->title = $request->title;
         $post->comment = $request->comment;
         $post->save();

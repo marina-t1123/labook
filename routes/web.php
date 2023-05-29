@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PostController;
+use App\Http\Controllers\CommentController;
 use App\Http\Controllers\ProfileController;
 use Illuminate\Support\Facades\Route;
 
@@ -28,7 +29,7 @@ Route::get('/', function () {
 Route::middleware('auth')->resource('/post', PostController::class);
 
 // 返信関連
-Route::middleware('auth')->resource('comment', CommentController::class);
+Route::middleware('auth')->resource('post.comments', CommentController::class)->shallow();
 
 //未使用のためコメントアウト
 // Route::get('/dashboard', function () {
