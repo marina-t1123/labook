@@ -26,14 +26,30 @@
                                         <button class="btn btn-dark" onclick="return confirm('本当に削除しますか？')">削除</button>
                                     </form>
                                 @endif
+                                <!-- いいねボタン -->
+                                <!-- 作成ボタン -->
+                                @if( $post->likes->isNotEmpty() || $post->likes->where('user_id', Auth::id())->isNotEmpty() )
+                                    <form action="{{ route('like.destroy', $post) }}" method="POST">
+                                        @csrf
+                                        @method('DELETE')
+                                        <button class="btn btn-danger">Like</button>
+                                    </form>
+                                @else
+                                    <form action="{{ route('like.store', $post) }}" method="POST">
+                                        @csrf
+                                        <button class="btn btn-dark">Like</button>
+                                    </form>
+                                @endif
+                                {{-- @@php
+                                    $likes = $post->likes->where('user_id', Auth::id());
+                                    ddd($likes);
+                                @endphp --}}
+                                {{-- @if($post->likes->where('user_id', Auth::id())) --}}
+
                                 <!-- 返信作成 -->
                                 <a href="{{ route('post.comments.create', $post) }}" class="btn btn-dark">コメント作成</a>
-                                <!-- 投稿に紐づいている返信を取得 -->
-                                @php
-                                    $comments = $post->comments;
-                                @endphp
                                 <!-- 返信一覧表示-->
-                                @if($comments->isNotEmpty())
+                                @if($post->comments->isNotEmpty())
                                     <button class="btn btn-dark" type="button" data-bs-toggle="collapse" data-bs-target="#collapseExample" aria-expanded="false" aria-controls="collapseExample">
                                         コメント一覧
                                     </button>
@@ -41,8 +57,8 @@
                             </div>
                             <!-- コメント表示 -->
 
-                            @if($comments->isNotEmpty())
-                                @foreach( $comments as $comment)
+                            @if($post->comments->isNotEmpty())
+                                @foreach( $post->comments as $comment)
                                     <div class="collapse my-4" id="collapseExample">
                                         <div class="card card-body">
                                             <!-- 内容 -->

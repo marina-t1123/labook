@@ -51,4 +51,11 @@ class User extends Authenticatable
     {
         return $this->hasMany(Post::class);
     }
+
+    // userは複数のいいねを持つことができる(調査内容部分)
+    public function likes()
+    {
+        return $this->hasMany(Like::class);
+    }
+
 }
